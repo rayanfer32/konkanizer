@@ -153,6 +153,7 @@ export default function LyricsTranslator() {
           className="min-h-[640px] text-gray-800 border-gray-200 bg-white placeholder:text-gray-400"
           value={translation}
           onChange={(e) => setTranslation(e.target.value)}
+          spellCheck={false}
         />
       </Card>
       <Toaster />
