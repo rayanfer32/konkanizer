@@ -33,7 +33,7 @@ function App() {
   };
 
   return (
-    <div className="p-2 h-full min-h-screen bg-gray-50">
+    <div className="p-2 h-full min-h-screen">
       <h1 className="text-3xl text-slate-700 font-bold text-center p-4">Konkanizer</h1>
       <LyricsTranslator />
     </div>

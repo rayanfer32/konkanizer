@@ -125,7 +125,7 @@ export default function LyricsTranslator() {
 
         <Textarea
           placeholder="Enter lyrics in English here..."
-          className="min-h-[640px] mb-4 text-gray-800 border-gray-700  placeholder:text-gray-400"
+          className="min-h-[640px] mb-4 text-gray-800 border-gray-200  placeholder:text-gray-400"
           value={lyrics}
           onChange={(e) => setLyrics(e.target.value)}
         />
@@ -136,21 +136,21 @@ export default function LyricsTranslator() {
         onOpenChange={setIsLyricsOpen}
         className="w-full"
       >
-        <Card className="p-4 text-gray-900 border-gray-800">
+        <Card className="p-4 text-gray-900 border-gray-200">
           <h2 className="text-xl font-semibold mb-3">Word Lookup</h2>
           <CollapsibleContent>
-            <div className="min-h-[640px] border border-gray-700 rounded-md p-4 max-h-[400px] overflow-auto text-gray-800">
+            <div className="min-h-[640px] border border-gray-200 rounded-md p-4 max-h-[400px] overflow-auto text-gray-800">
               {renderLyricsWithHover()}
             </div>
           </CollapsibleContent>
         </Card>
       </Collapsible>
 
-      <Card className="p-4 text-gray-900 border-gray-800">
+      <Card className="p-4 text-gray-900 border-gray-200">
         <h2 className="text-xl font-semibold mb-3">Your Translation</h2>
         <Textarea
           placeholder="Write your translation here..."
-          className="min-h-[640px] text-gray-800 border-gray-700 bg-white placeholder:text-gray-400"
+          className="min-h-[640px] text-gray-800 border-gray-200 bg-white placeholder:text-gray-400"
           value={translation}
           onChange={(e) => setTranslation(e.target.value)}
         />
