@@ -23,7 +23,7 @@ export default function LyricsTranslator() {
   const [lyrics, setLyrics] = useState("");
   const [translation, setTranslation] = useState("");
   const [hoveredWord, setHoveredWord] = useState("");
-  const [wordTranslation, setWordTranslation] = useState("");
+  const [wordTranslation, setWordTranslation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isLyricsOpen, setIsLyricsOpen] = useState(true);
@@ -45,7 +45,7 @@ export default function LyricsTranslator() {
         setWordTranslation(response);
       } catch (error) {
         toast("Failed to translate word");
-        setWordTranslation("Translation failed");
+        setWordTranslation(null);
       } finally {
         setIsLoading(false);
       }
@@ -53,7 +53,8 @@ export default function LyricsTranslator() {
   };
 
   // This function would call your translation API
-  const translateWord = async (word: string): Promise<string> => {
+  const translateWord = async (word: string): Promise<any> => {
+    //TODO : create a type for the response
     // Replace this with your own translation API
     const response = await fetch("http://localhost:3000/translate", {
       method: "POST",
@@ -62,9 +63,38 @@ export default function LyricsTranslator() {
       },
       body: JSON.stringify({ word }),
     });
-    const data = await response.json();
-    console.log("data", data);
-    return JSON.stringify(data);
+    return await response.json();
+  };
+
+  const renderTranslation = (translation: any | null) => {
+    if (translation) {
+      return (
+        <>
+          <div className="mb-6">
+            <p className="text-lg font-semibold text-gray-800 mb-1">Nouns:</p>
+            <ul className="list-disc list-inside space-y-2">
+              {translation?.noun?.map((word: string, index: number) => (
+                <li key={index} className="text-gray-700 text-sm">
+                  {word}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-lg font-semibold text-gray-800 mb-1">Verbs:</p>
+            <ul className="list-disc list-inside space-y-2">
+              {translation?.verb?.map((word: string, index: number) => (
+                <li key={index} className="text-gray-700 text-sm">
+                  {word}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      );
+    }
+    return <p className="mb-1 text-gray-600">Defination not found!</p>;
   };
 
   const renderLyricsWithHover = () => {
@@ -79,17 +109,17 @@ export default function LyricsTranslator() {
             <Popover key={`word-${lineIndex}-${wordIndex}`}>
               <PopoverTrigger asChild>
                 <span
-                  className="inline-block hover:bg-yellow-500 px-1 py-0.5 rounded cursor-pointer"
+                  className="inline-block hover:bg-yellow-100 px-2 py-0.5 rounded cursor-pointer"
                   onMouseEnter={() => handleWordHover(word)}
                 >
                   {word}
                 </span>
               </PopoverTrigger>
-              <PopoverContent className="w-48 p-2 text-gray-800 bg-gray-200 border-gray-700">
+              <PopoverContent className="bg-white p-3 rounded-lg shadow-lg">
                 {isLoading && hoveredWord === word ? (
                   <div className="text-center">Loading...</div>
                 ) : (
-                  <div>{wordTranslation}</div>
+                  renderTranslation(wordTranslation)
                 )}
               </PopoverContent>
             </Popover>

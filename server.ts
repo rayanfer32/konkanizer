@@ -1,16 +1,24 @@
-import express from 'express';
-import cors from 'cors';
-import { JSDOM } from 'jsdom';
+import express from "express";
+import cors from "cors";
+import { JSDOM } from "jsdom";
 
 const app = express();
 
 // Enable CORS for all routes
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "Origin",
+      "X-Requested-With",
+    ],
+    credentials: true,
+  })
+);
 
 // Parse JSON bodies
 app.use(express.json());
@@ -23,12 +31,13 @@ interface TranslationResult {
 }
 
 // Proxy endpoint
-app.post('/translate', async (req, res) => {
+app.post("/translate", async (req, res) => {
   try {
     const q = req.body.word;
     const resp = await fetch("http://www.thekonkanidictionary.com/search.asp", {
       headers: {
-        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
         "accept-language": "en-US,en;q=0.7",
         "cache-control": "max-age=0",
         "content-type": "application/x-www-form-urlencoded",
@@ -43,28 +52,34 @@ app.post('/translate', async (req, res) => {
     const htmlData = await resp.text();
     const dom = new JSDOM(htmlData);
     const document = dom.window.document;
-    
-    const tempObj: TranslationResult = {};
+
+    let tempObj: TranslationResult | null = null;
 
     const head2Elements = document.querySelectorAll(".head2");
     head2Elements.forEach((el: Element, index: number) => {
-      const tdString = el.parentElement?.textContent || '';
+      const tdString = el.parentElement?.innerHTML || "";
+
       const transString = tdString
-        .split("\n")
-        .filter((line: string) => line !== "")
-        .map((line: string) => line.trim());
+        .slice(tdString.indexOf("</span>") + 7, tdString.length)
+        .split("<br>")
+        .map((line: string) => line.replace(/(&nbsp;)*[\d]+\.\s*/g, "").replace(/&nbsp;/g, "").trim())
+        .filter((line: string) => line !== "");
 
       if (index === 0) {
+        if (!tempObj) tempObj = {};
         tempObj["noun"] = transString;
       }
       if (index === 1) {
+        if (!tempObj) tempObj = {};
         tempObj["verb"] = transString;
       }
     });
 
     res.json(tempObj);
   } catch (error) {
-    res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+    res.status(500).json({
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 });
 

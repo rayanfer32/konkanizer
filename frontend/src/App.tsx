@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import LyricsTranslator from "./components/LyricEditor";
-import LyricEditorV2 from "./components/LyricEditorV2";
+import LyricEditor from "./components/LyricEditor";
 
 interface Translation {
   noun?: string[];
@@ -36,7 +36,7 @@ function App() {
   return (
     <div className="p-2 h-full min-h-screen">
       <h1 className="text-3xl text-slate-700 font-bold text-center p-4">Konkanizer</h1>
-      <LyricEditorV2 />
+      <LyricEditor />
     </div>
   );
 }
