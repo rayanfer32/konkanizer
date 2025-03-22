@@ -7,10 +7,18 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
-    "@types/jsdom": "^21.1.7"
+    "@types/jsdom": "^21.1.7",
+    "concurrently": "^9.1.2",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.8.2"
+  },
+  "scripts": {
+    "server": "nodemon server.js",  
+    "fe": "cd frontend && bun run dev",
+    "dev": "concurrently \"bun run server\" \"bun run fe\""
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -1,0 +1,9 @@
+{
+    "watch": ["server.ts"],
+    "exec": "bun server.ts",
+    "ext": "js",
+    "events": {
+      "restart": "echo '🔄 Express server has reloaded due to file changes!'"
+    }
+  }
+  
